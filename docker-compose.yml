@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=Test@123
+      - MYSQL_DATABASE=BankDB
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - bankapp
+
+  mainapp:
+    build: .
+    container_name: Bankapp
+    environment:
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/BankDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_PASSWORD=Test@123
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - bankapp
+
+networks:
+  bankapp:
